@@ -22,6 +22,7 @@ function App() {
                     <Route path="/display" element={
                         <>
                             <DisplayerPage />
+                            <DisplayBack />
 
                     </>
                     } />
