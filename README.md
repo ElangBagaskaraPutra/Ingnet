@@ -1,1 +1,1 @@
-<img alt="Nurhadi Aldo" src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.bbc.com%2Findonesia%2Fmajalah-46791722&psig=AOvVaw1RiqCuDh1rmdtzNEm0WWRz&ust=1699412725729000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCKjGw_DzsIIDFQAAAAAdAAAAABAE">
+<img alt="Nurhadi Aldo" src="https://ichef.bbci.co.uk/news/1024/branded_indonesia/2DBF/production/_105111711_dildoedit.png">
