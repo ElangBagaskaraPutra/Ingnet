@@ -11,6 +11,7 @@ function App() {
     return (
         <Router>
             <div>
+                <Header/>
                 <Routes>
                     <Route path="/" element={
                         <>
@@ -21,11 +22,10 @@ function App() {
                     <Route path="/display" element={
                         <>
                             <DisplayerPage />
-                            <DisplayBack />
+
                     </>
                     } />
                 </Routes>
-
             </div>
         </Router>
     );
