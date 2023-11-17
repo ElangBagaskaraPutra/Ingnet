@@ -6,6 +6,7 @@ import Main from "./components/Main.jsx"
 import Header from "./components/Header.jsx"
 import Menu from "./components/Menu.jsx"
 import DisplayBack from "./components/Display/DisplayBG.jsx"
+import Gallery from "./components/Display/Gallery.jsx";
 
 function App() {
     return (
@@ -21,8 +22,7 @@ function App() {
                     } />
                     <Route path="/display" element={
                         <>
-                            <DisplayerPage />
-                            <DisplayBack />
+                            <Gallery/>
 
                     </>
                     } />

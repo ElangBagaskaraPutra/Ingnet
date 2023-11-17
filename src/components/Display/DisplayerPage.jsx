@@ -29,11 +29,11 @@ const DisplayerPage = () => {
     return (
         <div>
             <input type="file" onChange={handleFileUpload}/>
-            {selectedFile && <img src={selectedFile} alt="Uploaded content" style={{transform: `rotate(${rotation}deg) scaleX(${scaleX}) scaleY(${scaleY})` , filter: rotation > 180 ? 'blur(5px)' : 'none'}}/>}
+            {selectedFile && <img src={selectedFile} alt="Uploaded content" style={{transform: `rotate(${rotation}deg) scaleX(${scaleX}) scaleY(${scaleY})` , filter: rotation > 180 ? 'blur(5px)': 'none', animation: "spin 1s linear infinite" }}/>}
             <input type="range" min="0" max="360" value={rotation} onChange={handleRotateChange}/>
             <input type={"range"} min={"0.5"} max={"2"} step={"0.01"}  value={scaleX} onChange={handleScaleXChange}/>
             <input type={"range"} min={"0.5"} max={"2"} step={"0.01"} value={scaleY} onChange={handleScaleYChange}/>
-            if
+
             <h1>{scaleY}</h1>
             <h1>{scaleX}</h1>
             <h1>{rotation}</h1>
