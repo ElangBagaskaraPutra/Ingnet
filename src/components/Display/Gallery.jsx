@@ -71,10 +71,10 @@ function Gallery() {
             <div className="w-1/4 p-4">
                 <h1> Rotation: </h1> <input type={"number"} onChange={handleRotationChange} className={"border-2"}/>
                 <input type="range" min="-360" max="360" value={rotation} onChange={handleRotationChange} /> <br/> <br/>
-                <h1> Scale Vertical </h1> <input type={"number"} onChange={handleScaleXChange} className={"border-2"}/>
+                <h1> Scale Vertical </h1> <input type={"number"} value={scaleX} step={"0.01"} onChange={handleScaleXChange} className={"border-2"}/>
                 <input type={"range"} min={"0"} max={"10"} step={"0.01"}  value={scaleX} onChange={handleScaleXChange}/><br/> <br/>
                 <h1> Scale Horizontal </h1> <input type={"number"} onChange={handleScaleYChange} className={"border-2"}/>
-                <input type={"range"} min={"0"} max={"10"} step={"0.01"}  value={scaleX} onChange={handleScaleXChange}/> <br/> <br/>
+                <input type={"range"} min={"0"} max={"10"} step={"0.01"}  value={scaleY} onChange={handleScaleYChange}/> <br/> <br/>
                 <button onClick={handleDelete} className={"border-2"}>Delete</button>
             </div>
         </div>
