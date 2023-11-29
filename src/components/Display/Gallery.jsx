@@ -10,6 +10,8 @@ function Gallery() {
     const [newName, setNewName] = useState('');
     const [position, setPosition] = useState(0);
 
+
+
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
         const url = URL.createObjectURL(file);
@@ -133,7 +135,8 @@ function Gallery() {
                 <button onClick={handleDelete} className={"border-2 m-1"}>Hide Layer</button>
                 <button onClick={handleDeleteGallery} className={"border-2 m-1"}>Delete</button>
             </div>
-            <div className={"w-1/4 bg-blue-300"}>
+            <div className="w-1/4 p-4 bg-blue-300">
+
             </div>
         </div>
     );
