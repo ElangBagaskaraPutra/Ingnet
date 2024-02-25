@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
+import Sikirinsut1 from "./Assets/Sikirinsut1.png";
+import Sikirinsut2 from "./Assets/Sikirinsut2.png";
 
-function Gallery() {
-    const [images, setImages] = useState([]);
-    const [filteredImages, setFilteredImages] = useState([]);
+
+function Task1() {
+    const [images, setImages] = useState([
+        {name : "Sikirinsut1", url : Sikirinsut1, rotation: 0, scaleX: 1, scaleY: 1, transformX: 0, transformY: 0},
+        {name : "Sikirinsut2", url : Sikirinsut2, rotation: 0, scaleX: 1, scaleY: 1, transformX: 0, transformY: 0}
+    ]);
+    const [filteredImages, setFilteredImages] = useState([...images]);
     const [selectedImage, setSelectedImage] = useState(null);
     const [rotation, setRotation] = useState(0);
     const [scaleX, setScaleX] = useState(1)
@@ -12,22 +18,29 @@ function Gallery() {
     const [transformY, setTransformY] = useState(0);
 
 
-
-    const handleImageUpload = (event) => {
-        const file = event.target.files[0];
-        const url = URL.createObjectURL(file);
-        const newImages = [...images, {name: file.name, url: url}];
-        setImages(newImages);
-        setFilteredImages(newImages);
-    };
-
     const handleImageSelect = (index) => {
-        setSelectedImage(filteredImages[index].url);
         setNewName(filteredImages[index].name);
+        setSelectedImage(filteredImages[index].url);
+        setRotation(filteredImages[index].rotation);
+        setScaleX(filteredImages[index].scaleX);
+        setScaleY(filteredImages[index].scaleY);
+        setTransformX(filteredImages[index].transformX);
+        setTransformY(filteredImages[index].transformY);
     };
 
     const handleRotationChange = (event) => {
-        setRotation(event.target.value);
+        const newRotation = event.target.value;
+        setRotation(newRotation);
+
+        const newImages = images.map(image => {
+            if (image.url === selectedImage) {
+                return {...image, rotation: newRotation};
+            } else {
+                return image;
+            }
+        });
+        setImages(newImages);
+        setFilteredImages(newImages);
     };
 
     const handleScaleXChange = (event) => {
@@ -97,7 +110,6 @@ function Gallery() {
     return (
         <div className="flex h-screen">
             <div className={"p-4 w-1/4 bg-gray-400 "}>
-                <input type="file" accept="image/*" onChange={handleImageUpload} /><br/><br/>
                 <h1> Search: </h1>
                 <input type={"search"} onChange={handleImageSearch} className={"border-2"}/>
             </div>
@@ -153,8 +165,4 @@ function Gallery() {
     );
 }
 
-export default Gallery;
-
-function task() {
-
-}
+export default Task1;
