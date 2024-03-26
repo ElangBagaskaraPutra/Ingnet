@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import MainButton from "./components/MainButton.jsx";
 import Main from "./components/Main.jsx"
 import Header from "./components/Header.jsx"
 import Gallery from "./components/Display/Gallery.jsx";
@@ -10,6 +9,9 @@ import LandingPage from "./components/Display/LandingPage.jsx";
 import Tasks from "./components/Display/Task.jsx";
 import Task1 from "./components/Tasks/Task1/Task1.jsx";
 import Task2 from "./components/Tasks/Task2/Task2.jsx";
+import TaskBackup from "./components/Display/TaskBackup.jsx";
+import Task2Back from "./components/Tasks/Task2/Task2Back.jsx";
+import Task1Back from "./components/Tasks/Task1/Task1Back.jsx";
 
 function App() {
     return (
@@ -19,7 +21,6 @@ function App() {
                 <Routes>
                     <Route path="/" element={
                         <>
-                            <MainButton />
                             <Main />
                         </>
                     } />
@@ -42,13 +43,11 @@ function App() {
                     <Route path="/landing" element={
                         <>
                             <LandingPage/>
-                            <Main />
                         </>
                     } />
                     <Route path="/tasks" element={
                         <>
                             <Tasks/>
-                            <Main />
                         </>
                     } />
                     <Route path="/task1" element={
@@ -59,6 +58,21 @@ function App() {
                     <Route path="/task2" element={
                         <>
                             <Task2/>
+                        </>
+                    } />
+                    <Route path={"taskbackup"} element={
+                        <>
+                            <TaskBackup/>
+                        </>
+                    } />
+                    <Route path={"/task1back"} element={
+                        <>
+                            <Task1Back/>
+                        </>
+                    } />
+                    <Route path={"/task2back"} element={
+                        <>
+                            <Task2Back/>
                         </>
                     } />
                 </Routes>

@@ -1,18 +1,53 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
+import Sikirinsut1 from "./Assets/Sikirinsut1.png";
+import Sikirinsut2 from "./Assets/Sikirinsut2.png";
 
 function Gallery() {
-    const [images, setImages] = useState([]);
+    const [images, setImages] = useState([
+        {name : "Sikirinsut1", url : Sikirinsut1, rotation: 0, scaleX: 1, scaleY: 1, transformX: 0, transformY: 0},
+        {name : "Sikirinsut2", url : Sikirinsut2, rotation: 0, scaleX: 1, scaleY: 1, transformX: 0, transformY: 0}
+    ]);
     const [filteredImages, setFilteredImages] = useState([]);
     const [selectedImages, setSelectedImages] = useState([]);
     const [transformations, setTransformations] = useState({});
     const [zIndexValues, setZIndexValues] = useState({});
+    const [tasks, setTasks] = useState([
+        { name: "Rotate image 90 degrees", completed: false }
+    ]);
 
-    const handleImageUpload = (event) => {
-        const file = event.target.files[0];
-        const url = URL.createObjectURL(file);
-        const newImages = [...images, { name: file.name, url: url }];
-        setImages(newImages);
-        setFilteredImages(newImages);
+    useEffect(() => {
+        setFilteredImages(images);
+    }, [images]);
+
+    useEffect(() => {
+        // Generate tasks based on transformations for each image
+        const newTasks = selectedImages.map(image => {
+            const rotation = transformations[image.url]?.rotation || 0;
+            const requiredRotation = getRequiredRotation(image); // Get required rotation for the image
+            const tolerance = 1; // Set a tolerance level for rotation comparison
+
+
+            const completed = Math.abs(rotation - requiredRotation) <= tolerance;
+
+            return {
+                name: `Rotate image ${requiredRotation} degrees`,
+                completed
+            };
+        });
+        setTasks(newTasks);
+    }, [selectedImages, transformations]);
+
+    const getRequiredRotation = (image) => {
+        if (image.name === 'Sikirinsut1') {
+            return 90;
+        } else if (image.name === 'Sikirinsut2') {
+            return 45;
+        }
+        return 0;
+    }
+
+    const areAllTasksCompleted = () => {
+        return tasks.every(task => task.completed);
     };
 
     const handleImageSearch = (event) => {
@@ -68,9 +103,19 @@ function Gallery() {
     return (
         <div className="flex h-screen">
             <div className={"p-4 w-1/4 bg-gray-400 "}>
-                <input type="file" accept="image/*" onChange={handleImageUpload} /><br/><br/>
                 <h1> Search: </h1>
                 <input type={"search"} onChange={handleImageSearch} className={"border-2"}/>
+                <h2>Tasks</h2>
+                <ul>
+                    {tasks.map((task, index) => (
+                        <li key={index}>
+                            {task.name}
+                            {task.completed && <span>&#10004;</span>}
+                        </li>
+                    ))}
+                    {tasks.length === 0 && <li>No tasks</li>}
+                    {tasks.length > 0 && areAllTasksCompleted() && <li>Task Done</li>}
+                </ul>
             </div>
             <div className="w-3/4 bg-gray-200 relative">
                 <div className="container aspect-[3840/896] bg-black overflow-hidden relative object-contain">
@@ -79,7 +124,7 @@ function Gallery() {
                             key={image.url}
                             style={{
                                 transform: `rotate(${transformations[image.url]?.rotation || 0}deg) scaleX(${transformations[image.url]?.scaleX || 1}) scaleY(${transformations[image.url]?.scaleY || 1}) translateX(${transformations[image.url]?.translateX || 0}px) translateY(${transformations[image.url]?.translateY || 0}px)`,
-                                zIndex: zIndexValues[image.url] || 0
+                                zIndex: zIndexValues[image.url] || 0 // Dynamically assign z-index
                             }}
                             className="absolute top-0 left-0 object-contain w-full h-full"
                         >
@@ -113,6 +158,7 @@ function Gallery() {
                         <h3>Transformations for {image.name}</h3>
                         <div>
                             <label>Rotation:</label>
+                            <span>{transformations[image.url]?.rotation || 0} degrees</span>
                             <input type="range" min="-360" max="360" value={transformations[image.url]?.rotation || 0} onChange={(e) => handleTransformationChange('rotation', e.target.value, image.url)} />
                         </div>
                         <div>

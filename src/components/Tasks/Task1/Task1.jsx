@@ -1,69 +1,125 @@
-import React, { useState } from 'react';
-import Sikirinsut1 from "./Assets/Sikirinsut1.png";
-import Sikirinsut2 from "./Assets/Sikirinsut2.png";
-
+import React, {useEffect, useState} from 'react';
+import Cat from "./Assets/Cat.png";
 
 function Task1() {
     const [images, setImages] = useState([
-        {name : "Sikirinsut1", url : Sikirinsut1, rotation: 0, scaleX: 1, scaleY: 1, transformX: 0, transformY: 0},
-        {name : "Sikirinsut2", url : Sikirinsut2, rotation: 0, scaleX: 1, scaleY: 1, transformX: 0, transformY: 0}
+        {name : "Cat", url : Cat, rotation: 0, scaleX: 1, scaleY: 1, translateX: 0, translateY: 0},
     ]);
-    const [filteredImages, setFilteredImages] = useState([...images]);
-    const [selectedImage, setSelectedImage] = useState(null);
-    const [rotation, setRotation] = useState(0);
-    const [scaleX, setScaleX] = useState(1)
-    const [scaleY, setScaleY] = useState(1)
-    const [newName, setNewName] = useState('');
-    const [transformX, setTransformX] = useState(0);
-    const [transformY, setTransformY] = useState(0);
+    const [filteredImages, setFilteredImages] = useState([]);
+    const [selectedImages, setSelectedImages] = useState([]);
+    const [transformations, setTransformations] = useState({});
+    const [zIndexValues, setZIndexValues] = useState({});
+    const [tasks, setTasks] = useState([
+        { name: "Rotate image 90 degrees", completed: false }
+    ]);
 
+    useEffect(() => {
+        setFilteredImages(images);
+    }, [images]);
 
-    const handleImageSelect = (index) => {
-        setNewName(filteredImages[index].name);
-        setSelectedImage(filteredImages[index].url);
-        setRotation(filteredImages[index].rotation);
-        setScaleX(filteredImages[index].scaleX);
-        setScaleY(filteredImages[index].scaleY);
-        setTransformX(filteredImages[index].transformX);
-        setTransformY(filteredImages[index].transformY);
-    };
+    useEffect(() => {
+        // Generate tasks based on transformations for each image
+        const newTasks = selectedImages.flatMap(image => {
+            const tolerance = 1;
+            const toleranceTransform = 50;
 
-    const handleRotationChange = (event) => {
-        const newRotation = event.target.value;
-        setRotation(newRotation);
+            const rotation = transformations[image.url]?.rotation || 0;
+            const translateX = transformations[image.url]?.translateX || 0;
+            const translateY = transformations[image.url]?.translateY || 0;
 
-        const newImages = images.map(image => {
-            if (image.url === selectedImage) {
-                return {...image, rotation: newRotation};
-            } else {
-                return image;
-            }
+            const requiredTransformationY = getRequiredTransformationY(image); // Get required transformation for the image
+            const requiredTransformationX = getRequiredTransformationX(image); // Get required transformation for the image
+            const requiredRotation = getRequiredRotation(image); // Get required rotation for the image
+
+            const completeTransformationX = Math.abs(translateX - requiredTransformationX) <= toleranceTransform;
+            const completeTransformationY = Math.abs(translateY - requiredTransformationY) <= toleranceTransform;
+            const completeRotate = Math.abs(rotation - requiredRotation) <= tolerance;
+
+            const tasks = [];
+
+            tasks.push({
+                name:`${image.name} Tasks:`,
+                completed: areAllTasksCompleted(),
+                exclamationMark: false
+
         });
-        setImages(newImages);
-        setFilteredImages(newImages);
+            if (!completeRotate) {
+                tasks.push({
+                    name: `Rotate image ${image.name} ${requiredRotation} degrees`,
+                    completed: completeRotate
+                });
+            } else {
+                tasks.push({
+                    name: `Rotate image ${image.name} ${requiredRotation} degrees`,
+                    completed: completeRotate,
+                    exclamationMark: true // Flag to indicate that an exclamation mark should be displayed
+                });
+            }
+
+            if (!completeTransformationX) {
+                tasks.push({
+                    name: `Transform X to ${requiredTransformationX}`,
+                    completed: completeTransformationX
+                });
+            } else {
+                tasks.push({
+                    name: `Transform X to ${requiredTransformationX}`,
+                    completed: completeTransformationX,
+                    exclamationMark: true // Flag to indicate that an exclamation mark should be displayed
+                });
+            }
+
+            if (!completeTransformationY) {
+                tasks.push({
+                    name: `Transform Y to ${requiredTransformationY}`,
+                    completed: completeTransformationY
+                });
+            } else {
+                tasks.push({
+                    name: `Transform Y to ${requiredTransformationY}`,
+                    completed: completeTransformationY,
+                    exclamationMark: true // Flag to indicate that an exclamation mark should be displayed
+                });
+            }
+
+            return tasks;
+
+        });
+
+        // Set tasks for each image
+        setTasks(newTasks);
+    }, [selectedImages, transformations]);
+
+    const getRequiredTransformationY = (image) => {
+        if (image.name === 'Sikirinsut1') {
+            return 2;
+        } else if (image.name === 'Sikirinsut2') {
+            return 2;
+        }
+        return 0;
+    }
+
+    const getRequiredTransformationX = (image) => {
+        if (image.name === 'Sikirinsut1') {
+            return 200;
+        } else if (image.name === 'Sikirinsut2') {
+            return 200;
+        }
+        return 0;
+    }
+
+    const getRequiredRotation = (image) => {
+        if (image.name === 'Sikirinsut1') {
+            return 90;
+        } else if (image.name === 'Sikirinsut2') {
+            return 45;
+        }
+        return 0;
+    }
+
+    const areAllTasksCompleted = () => {
+        return tasks.every(task => task.completed);
     };
-
-    const handleScaleXChange = (event) => {
-        setScaleX(event.target.value);
-    }
-
-    const handleScaleYChange = (event) => {
-        setScaleY(event.target.value);
-    }
-
-
-    const handleDeleteGallery = () => {
-        const newImages = images.filter(image => image.url !== selectedImage);
-        setImages(newImages);
-        setFilteredImages(newImages);
-        setSelectedImage(null);
-    }
-
-
-    const handleDelete = () => {
-        setImages(images.filter(image => image !== selectedImage));
-        setSelectedImage(null);
-    }
 
     const handleImageSearch = (event) => {
         const search = event.target.value;
@@ -75,55 +131,85 @@ function Task1() {
         }
     }
 
-    const handleReset = () => {
-        setRotation(0);
-        setScaleX(1);
-        setScaleY(1);
-        setTransformX(0);
-        setTransformY(0)
-    }
-
-    const handleRename = () => {
-        if (newName) {
-            const newImages = images.map(image => {
-                if (image.url === selectedImage) {
-                    return {name: newName, url: image.url};
-                } else {
-                    return image;
-                }
-            });
-            setImages(newImages);
-            setFilteredImages(newImages);
-            setNewName('');
+    const handleImageSelect = (index) => {
+        const image = filteredImages[index];
+        const isSelected = selectedImages.some(selectedImage => selectedImage.url === image.url);
+        if (isSelected) {
+            setSelectedImages(selectedImages.filter(selectedImage => selectedImage.url !== image.url));
+        } else {
+            setSelectedImages([...selectedImages, image]);
         }
+    };
+
+    const handleTransformationChange = (property, value, imageUrl) => {
+        setTransformations(prevState => ({
+            ...prevState,
+            [imageUrl]: {
+                ...prevState[imageUrl],
+                [property]: value
+            }
+        }));
+    };
+
+    const handleDeleteGallery = () => {
+        const newImages = images.filter(image => !selectedImages.includes(image));
+        setImages(newImages);
+        setFilteredImages(newImages);
+        setSelectedImages([]);
     }
 
-    const handleTransformX=(event)=>{
-        setTransformX(event.target.value);
+    const handleReset = () => {
+        setTransformations({});
     }
 
-    const handleTransformY=(event)=>{
-        setTransformY(event.target.value);
-    }
+    const handleZIndexChange = (value, imageUrl) => {
+        setZIndexValues(prevState => ({
+            ...prevState,
+            [imageUrl]: value
+        }));
+    };
+
 
 
     return (
         <div className="flex h-screen">
             <div className={"p-4 w-1/4 bg-gray-400 "}>
                 <h1> Search: </h1>
-                <input type={"search"} onChange={handleImageSearch} className={"border-2"}/>
+                <input type={"search"} onChange={handleImageSearch} className={"border-2"}/> <br/> <br/>
+                <br/>
+                <h2 className={"font-bold"}>Tasks List:</h2>
+                <br/>
+                <ul>
+                    {tasks.map((task, index) => (
+                        <li key={index}>
+
+                            {task.name}
+                            {task.completed && <span>&#10004;</span>}
+                            {!task.completed && <span>&#9888;</span>}
+                        </li>
+                    ))}
+                    {tasks.length === 0 && <li className={"font-bold"}>Select Image To Get Tasks</li>}
+                    {tasks.length > 0 && areAllTasksCompleted() && <li className={"font-bold"}>Task Done</li>}
+                </ul>
             </div>
-            <div className="w-3/4 bg-gray-200">
-                <div className="container object-contain aspect-[3840/896] bg-black overflow-hidden">
-                    {selectedImage && (
-                        <div style={{ transform: `rotate(${rotation}deg) scaleX(${scaleX}) scaleY(${scaleY}) translateX(${transformX}px) translateY(${transformY}px)` }} className="w-full h-full">
+            <div className="w-3/4 bg-gray-200 relative">
+                <div className="container aspect-[3840/896] bg-black overflow-hidden relative object-contain">
+                    {selectedImages.map((image, ) => (
+                        <div
+                            key={image.url}
+                            style={{
+                                transform: `rotate(${transformations[image.url]?.rotation || 0}deg) scaleX(${transformations[image.url]?.scaleX || 1}) scaleY(${transformations[image.url]?.scaleY || 1}) translateX(${transformations[image.url]?.translateX || 0}px) translateY(${transformations[image.url]?.translateY || 0}px)`,
+                                zIndex: zIndexValues[image.url] || 0 // Dynamically assign z-index
+                            }}
+                            className="absolute top-0 left-0 object-contain w-full h-full"
+                        >
                             <img
-                                src={selectedImage}
+                                src={image.url}
                                 alt=""
                                 className="object-contain w-full h-full"
                             />
                         </div>
-                    )}
+                    ))}
                 </div>
                 <div className="flex flex-wrap">
                     {filteredImages.map((image, index) => (
@@ -137,29 +223,41 @@ function Task1() {
                     ))}
                 </div>
             </div>
-            <div className="w-1/4 p-4 bg-gray-400">
-                <h1> Rename: </h1>
-                <input type={"text"} onChange={(event) => setNewName(event.target.value)} value={newName} className={"border-2"}/>
-                <button onClick={handleRename} className={"border-2 m-1"}>Rename</button>
-
-                <h1> Rotation: </h1> <input type={"number"} value={rotation} onChange={handleRotationChange} className={"border-2"}/>
-                <input type="range" min="-360" max="360" value={rotation} onChange={handleRotationChange} /> <br/> <br/>
-
-                <h1> Scale Horizontal </h1> <input type={"number"} value={scaleX} step={"0.01"} onChange={handleScaleXChange} className={"border-2"}/>
-                <input type={"range"} min={"0"} max={"10"} step={"0.01"}  value={scaleX} onChange={handleScaleXChange}/><br/> <br/>
-
-                <h1> Scale Vertical </h1> <input type={"number"} value={scaleY} onChange={handleScaleYChange} className={"border-2"}/>
-                <input type={"range"} min={"0"} max={"10"} step={"0.01"}  value={scaleY} onChange={handleScaleYChange}/> <br/> <br/>
-
-                <h1> Transform X </h1> <input type={"number"} value={transformX} onChange={handleTransformX} className={"border-2"}/>
-                <input type={"range"} min={"-1000"} max={"1000"} step={"0.1"}  value={transformX} onChange={handleTransformX}/> <br/> <br/>
-
-                <h1> Transform Y </h1> <input type={"number"} value={transformY} onChange={handleTransformY} className={"border-2"}/>
-                <input type={"range"} min={"-1000"} max={"1000"} step={"0.1"}  value={transformY} onChange={handleTransformY}/> <br/> <br/>
-
+            <div className="w-1/4 p-4 bg-gray-900 text-white">
                 <button onClick={handleReset} className={"border-2 m-1"}> Reset </button>
-                <button onClick={handleDelete} className={"border-2 m-1"}>Hide Layer</button>
                 <button onClick={handleDeleteGallery} className={"border-2 m-1"}>Delete</button>
+                {/* Sliders for transformation properties */}
+                {selectedImages.map((image) => (
+                    <div key={image.url}>
+                        <br/><br/>
+                        <h3>Transformations for {image.name}</h3>
+                        <div>
+                            <label>Rotation:</label>
+                            <span>{transformations[image.url]?.rotation || 0} degrees</span> <br/>
+                            <input type="range" min="-360" max="360" value={transformations[image.url]?.rotation || 0} onChange={(e) => handleTransformationChange('rotation', e.target.value, image.url)} />
+                        </div>
+                        <div>
+                            <label>Scale X:</label>
+                            <input type="range" min="0" max="10" step="0.01" value={transformations[image.url]?.scaleX || 1} onChange={(e) => handleTransformationChange('scaleX', e.target.value, image.url)} />
+                        </div>
+                        <div>
+                            <label>Scale Y:</label>
+                            <input type="range" min="0" max="10" step="0.01" value={transformations[image.url]?.scaleY || 1} onChange={(e) => handleTransformationChange('scaleY', e.target.value, image.url)} />
+                        </div>
+                        <div>
+                            <label>Transform X:</label>
+                            <input type="range" min="-1000" max="1000" step="0.1" value={transformations[image.url]?.translateX || 0} onChange={(e) => handleTransformationChange('translateX', e.target.value, image.url)} />
+                        </div>
+                        <div>
+                            <label>Transform Y:</label>
+                            <input type="range" min="-1000" max="1000" step="0.1" value={transformations[image.url]?.translateY || 0} onChange={(e) => handleTransformationChange('translateY', e.target.value, image.url)} />
+                        </div>
+                        <div>
+                            <label>Layer:</label>
+                            <input type="number" defaultValue={zIndexValues[image.url]?.zIndex} onChange={(e) => handleZIndexChange(parseInt(e.target.value), image.url)} />
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );
